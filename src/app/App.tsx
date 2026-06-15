@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown, Star, Mail, Phone, MapPin, Instagram, Facebook, Twitter, Sun, Moon, Check, AlertCircle } from "lucide-react";
 import emailjs from "@emailjs/browser";
-import heroBg from "@/imports/image.png";
-import logo from "@/img/snovalogo.png";
-import profile from "@/img/profile.jpg";
-import fear from "@/img/fear.jpg";
-import anger from "@/img/anger.png";
-import joker from "@/img/joker.jpg";
+import heroBg from "../imports/image.png";
+import logo from "../img/snovalogo.png";
+import profile from "../img/profile.jpg";
+import fear from "../img/fear.jpg";
+import anger from "../img/anger.png";
+import joker from "../img/joker.jpg";
 
 const NAV_LINKS = ["Home", "Services", "Portfolio", "About Us", "Testimonials", "Contact Us"];
 
@@ -305,14 +305,17 @@ export default function App() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formRef.current) return;
+    const form = formRef.current;
+    if (!form) return;
 
     setSending(true);
+    // Accessing environment variables typed in vite-env.d.ts
+    
     emailjs.sendForm(
-      (import.meta as any).env.VITE_EMAILJS_SERVICE_ID || "",
-      (import.meta as any).env.VITE_EMAILJS_TEMPLATE_ID || "",
-      formRef.current,
-      (import.meta as any).env.VITE_EMAILJS_PUBLIC_KEY || ""
+      import.meta.env.VITE_EMAILJS_SERVICE_ID || "",
+      import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "",
+      form,
+      import.meta.env.VITE_EMAILJS_PUBLIC_KEY || ""
     )
     .then(() => {
       setShowSuccess(true);
@@ -1231,13 +1234,12 @@ export default function App() {
                   name="from_name"
                   required
                   placeholder="Your full name"
-                  className="w-full rounded-xl px-4 py-3 text-sm border transition-all focus:outline-none focus:ring-2"
+                  className="w-full rounded-xl px-4 py-3 text-sm border transition-all focus:outline-none focus:ring-2 focus:ring-[var(--site-ring-focus)]"
                   style={{
                     background:   v("site-input-bg"),
                     borderColor:  "#f5d894",
                     color:        v("site-text"),
-                    "--tw-ring-color": v("site-ring-focus"),
-                  } as React.CSSProperties}
+                  }}
                   onFocus={(e) => { e.currentTarget.style.borderColor = v("site-teal"); }}
                   onBlur={(e)  => { e.currentTarget.style.borderColor = "#f5d894"; }}
                 />
@@ -1249,13 +1251,12 @@ export default function App() {
                   name="reply_to"
                   required
                   placeholder="your@email.com"
-                  className="w-full rounded-xl px-4 py-3 text-sm border transition-all focus:outline-none focus:ring-2"
+                  className="w-full rounded-xl px-4 py-3 text-sm border transition-all focus:outline-none focus:ring-2 focus:ring-[var(--site-ring-focus)]"
                   style={{
                     background:  v("site-input-bg"),
                     borderColor: "#f5d894",
                     color:       v("site-text"),
-                    "--tw-ring-color": v("site-ring-focus"),
-                  } as React.CSSProperties}
+                  }}
                   onFocus={(e) => { e.currentTarget.style.borderColor = v("site-teal"); }}
                   onBlur={(e)  => { e.currentTarget.style.borderColor = "#f5d894"; }}
                 />
