@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
   # Artistic Website Landing Page
 
@@ -9,3 +10,6 @@
 
   Run `npm run dev` to start the development server.
   
+=======
+# are-website
+>>>>>>> 2f48e20e81939a04730b4845aa57a9978c5ecbef
