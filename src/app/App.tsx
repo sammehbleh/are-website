@@ -309,17 +309,16 @@ export default function App() {
     if (!form) return;
 
     setSending(true);
-    // Accessing environment variables typed in vite-env.d.ts
-    
-    emailjs.sendForm(
-      import.meta.env.VITE_EMAILJS_SERVICE_ID || "",
-      import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "",
-      form,
-      import.meta.env.VITE_EMAILJS_PUBLIC_KEY || ""
-    )
+    emailjs
+      .sendForm(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID || "",
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "",
+        form,
+        { publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "" }
+      )
     .then(() => {
       setShowSuccess(true);
-      formRef.current?.reset();
+      form.reset();
     })
     .catch((error) => {
       console.error("EmailJS Error:", error);
@@ -1235,7 +1234,7 @@ export default function App() {
                 <label className="block text-[10px] tracking-[0.25em] uppercase mb-2" style={{ color: "#f5d894" }}>Name</label>
                 <input
                   type="text"
-                  name="from_name"
+                  name="name"
                   required
                   placeholder="Your full name"
                   className="w-full rounded-xl px-4 py-3 text-sm border transition-all focus:outline-none focus:ring-2 focus:ring-[var(--site-ring-focus)]"
@@ -1252,7 +1251,7 @@ export default function App() {
                 <label className="block text-[10px] tracking-[0.25em] uppercase mb-2" style={{ color: "#f5d894" }}>Email</label>
                 <input
                   type="email"
-                  name="reply_to"
+                  name="email"
                   required
                   placeholder="your@email.com"
                   className="w-full rounded-xl px-4 py-3 text-sm border transition-all focus:outline-none focus:ring-2 focus:ring-[var(--site-ring-focus)]"
@@ -1283,7 +1282,7 @@ export default function App() {
               >
                 <option value="">Select acquisition type</option>
                 <option>Collector's Poster Edition</option>
-                <option>Signature Framed Edition</option>
+                <option>Collector's Replica Framed Edition</option>
                 <option>Original Masterpiece</option>
                 <option>Custom Commission</option>
               </select>
@@ -1388,7 +1387,7 @@ export default function App() {
             <div>
               <p className="text-[10px] tracking-[0.3em] uppercase mb-5" style={{ color: v("site-gold") }}>Acquire Art</p>
               <ul className="space-y-3">
-                {["Collector's Poster Edition", "Signature Framed Edition", "Original Masterpiece", "Custom Commissions"].map((s) => (
+                {["Collector's Poster Edition", "Collector's Replica Framed Edition", "Original Masterpiece", "Custom Commissions"].map((s) => (
                   <li key={s}>
                     <button
                       onClick={() => scrollTo("Contact Us")}
