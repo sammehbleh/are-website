@@ -56,7 +56,7 @@ const SERVICES = [
     tagline: "An affordable collectible piece",
     description:
       "Printed copy of the original artwork limited to authenticated copies in 2 x 2.5ft. (size will depend on the artwork’s size without changing the orientation and overall size)", // Description from prompt
-    features: ["Premium poster print", "Artist's signature", "Artwork details on the reverse side", "Authenticity Card", "Limited to only 7 copies worldwide", "3-Day Creation", "Note: An affordable way to own a collectible piece from the collection."],
+    features: ["Premium poster print", "Artist's signature", "Limited to 7 Copies", "Artwork details on the reverse side", "Authenticity Card", "3-Day Creation", "Note: An affordable way to own a collectible piece from the collection."],
     tags: ["Collectible", "Limited Edition", "Affordable"],
     price: "₱499",
   },
@@ -66,7 +66,7 @@ const SERVICES = [
     tagline: "Gallery-inspired presentation",
     description:
       "Full-size reproduction matching the original artwork.", // Concise description, details in features
-    features: ["Full-size reproduction matching the original artwork", "Premium frame of your choice", "Artist's signature", "Artwork details on the reverse side", "Authenticity Card", "Limited to only 7 copies worldwide", "3-Day Creation", "Note: Designed for collectors seeking a gallery-inspired presentation."],
+    features: ["Full-size reproduction matching the original artwork", "Limited to 7 Copies", "Premium frame of your choice", "Artist's signature", "Artwork details on the reverse side", "Authenticity Card", "3-Day Creation", "Note: Designed for collectors seeking a gallery-inspired presentation."],
     tags: ["Framed", "Reproduction", "Limited Edition", "Customizable"],
     price: "₱729",
     priceNote: "(Price varies depending on frame selection and artwork size.)",
@@ -1345,9 +1345,8 @@ export default function App() {
               </p>
               <div className="flex gap-4 mt-6">
                 {[
-                  { Icon: Instagram, href: "#" },
+                  { Icon: Instagram, href: "https://www.instagram.com/snva.co/" },
                   { Icon: Facebook,  href: "https://www.facebook.com/artsbysnva" },
-                  { Icon: Twitter,   href: "#" },
                 ].map(({ Icon, href }, i) => (
                   <a
                     key={i}
