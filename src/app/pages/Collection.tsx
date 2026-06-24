@@ -4,6 +4,9 @@ import { ArrowLeft, X } from "lucide-react";
 import { DARK, applyTokens, v } from "../theme";
 import { GALLERY_ARTWORKS, type Artwork } from "../data/artworks";
 
+/* Toggle to re-enable the artwork detail modal from the showcase grid */
+const ARTWORK_DETAIL_ENABLED = true;
+
 export default function Collection() {
   const navigate = useNavigate();
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
@@ -81,14 +84,14 @@ export default function Collection() {
               <button
                 key={art.id}
                 type="button"
-                onClick={() => setSelectedArtwork(art)}
-                className="group relative overflow-hidden rounded-xl sm:rounded-2xl cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-[var(--site-teal)]"
-                aria-label={`View details for ${art.title}`}
+                onClick={() => { if (ARTWORK_DETAIL_ENABLED) setSelectedArtwork(art); }}
+                className={`group relative overflow-hidden rounded-xl sm:rounded-2xl text-left focus:outline-none ${ARTWORK_DETAIL_ENABLED ? "cursor-pointer focus:ring-2 focus:ring-[var(--site-teal)]" : "cursor-default"}`}
+                aria-label={art.category}
               >
                 <div className="aspect-[3/4] relative overflow-hidden rounded-xl sm:rounded-2xl" style={{ background: v("site-card") }}>
                   <img
                     src={art.img}
-                    alt={art.title}
+                    alt={art.category}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 group-active:scale-105 opacity-90 group-hover:opacity-100"
                   />
                   <div
@@ -96,11 +99,11 @@ export default function Collection() {
                     style={{ background: `linear-gradient(to top, ${v("site-bg")} 0%, transparent 60%)` }}
                   />
                   <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 translate-y-0 sm:translate-y-4 opacity-100 sm:opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                    <p className="text-[9px] sm:text-[11px] tracking-[0.25em] sm:tracking-[0.3em] uppercase mb-1" style={{ color: v("site-gold") }}>
-                      {art.medium} · {art.year}
-                    </p>
-                    <p style={{ fontFamily: "'Playfair Display', serif", color: v("site-text") }} className="text-base sm:text-xl italic leading-tight">
-                      {art.title}
+                    <p
+                      className="inline-block rounded-full border px-3 py-1.5 text-[10px] sm:text-[12px] tracking-[0.25em] sm:tracking-[0.3em] uppercase backdrop-blur-md"
+                      style={{ color: "#f5e500", background: "rgba(255,255,255,0.1)", borderColor: "rgba(255,255,255,0.2)" }}
+                    >
+                      {art.category}
                     </p>
                   </div>
                 </div>
@@ -155,15 +158,9 @@ export default function Collection() {
                 {selectedArtwork.title}
               </h3>
 
-              <p className="mb-6 sm:mb-8 text-base sm:text-lg leading-relaxed font-light" style={{ color: v("site-muted") }}>
-                {selectedArtwork.description}
-              </p>
-
               <div className="grid gap-3 sm:gap-4 border-y py-5 sm:py-6" style={{ borderColor: v("site-divider") }}>
                 {[
                   ["Medium", selectedArtwork.medium],
-                  ["Made Date", selectedArtwork.madeDate],
-                  ["Year", selectedArtwork.year],
                   ["Dimensions", selectedArtwork.dimensions],
                   ["Availability", selectedArtwork.availability],
                 ].map(([label, value]) => (
@@ -182,7 +179,7 @@ export default function Collection() {
                 onMouseEnter={(e) => (e.currentTarget.style.background = v("site-teal"))}
                 onMouseLeave={(e) => (e.currentTarget.style.background = v("site-gold"))}
               >
-                Inquire About This Piece
+                Inquire about re-creating this piece?
               </button>
             </div>
           </div>

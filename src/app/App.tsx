@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router";
-import { Menu, X, ChevronDown, Star, Mail, Phone, MapPin, Instagram, Facebook, Twitter, Sun, Moon, Check, AlertCircle, Printer, Frame, Sparkles } from "lucide-react";
+import { useNavigate, useLocation } from "react-router";
+import { Menu, X, ChevronDown, Star, Mail, MapPin, Instagram, Facebook, Twitter, Sun, Moon, Check, AlertCircle, Printer, Frame, Sparkles } from "lucide-react";
 import emailjs from "@emailjs/browser";
 import heroBg from "../imports/image.png";
 import logo from "../img/snovalogo.png";
@@ -10,6 +10,9 @@ import { DARK, LIGHT, applyTokens, v } from "./theme";
 import { FEATURED_ARTWORKS as ARTWORKS } from "./data/artworks";
 
 const NAV_LINKS = ["Home", "Services", "Portfolio", "About Us", "Testimonials", "Contact Us"];
+
+/* Toggle to re-enable the artwork detail modal from the showcase grids */
+const ARTWORK_DETAIL_ENABLED = true;
 
 const SERVICES = [
   {
@@ -96,6 +99,7 @@ const HERO_SLIDES = ARTWORKS.map((art) => ({
 
 export default function App() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen]   = useState(false);
   const [scrolled, setScrolled]   = useState(false);
   const [activeSection, setActive] = useState("Home");
@@ -115,6 +119,17 @@ export default function App() {
     applyTokens(dark ? DARK : LIGHT);
     document.documentElement.style.setProperty("--site-scheme", dark ? "dark" : "light");
   }, [dark]);
+
+  // Scroll to the section named in the URL hash when arriving from another
+  // page (e.g. the Collection page links here via "/#contact-us").
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.slice(1);
+    const t = setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }, 120);
+    return () => clearTimeout(t);
+  }, [location.hash]);
 
   useEffect(() => {
     // Switch the floating/opaque nav style only once the hero has mostly scrolled
@@ -263,7 +278,7 @@ export default function App() {
                 </span>
               </div>
               <span className="text-[9px] tracking-[0.3em] uppercase -mt-0.5 transition-colors duration-300" style={{ color: scrolled ? v("site-muted") : "rgba(245, 229, 0, 0.8)" }}>
-                Art Website
+                Select Art Website
               </span>
             </div>
 
@@ -673,14 +688,14 @@ export default function App() {
               <button
                 key={art.id}
                 type="button"
-                onClick={() => setSelectedArtwork(art)}
-                className="group relative overflow-hidden rounded-xl sm:rounded-2xl cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-[var(--site-teal)]"
-                aria-label={`View details for ${art.title}`}
+                onClick={() => { if (ARTWORK_DETAIL_ENABLED) setSelectedArtwork(art); }}
+                className={`group relative overflow-hidden rounded-xl sm:rounded-2xl text-left focus:outline-none ${ARTWORK_DETAIL_ENABLED ? "cursor-pointer focus:ring-2 focus:ring-[var(--site-teal)]" : "cursor-default"}`}
+                aria-label={art.category}
               >
                 <div className="aspect-[3/4] relative overflow-hidden rounded-xl sm:rounded-2xl" style={{ background: v("site-card") }}>
                   <img
                     src={art.img}
-                    alt={art.title}
+                    alt={art.category}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 group-active:scale-105 opacity-90 group-hover:opacity-100"
                   />
                   <div
@@ -688,11 +703,11 @@ export default function App() {
                     style={{ background: `linear-gradient(to top, ${v("site-bg")} 0%, transparent 60%)` }}
                   />
                   <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 translate-y-0 sm:translate-y-4 opacity-100 sm:opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                    <p className="text-[9px] sm:text-[11px] tracking-[0.25em] sm:tracking-[0.3em] uppercase mb-1" style={{ color: v("site-gold") }}>
-                      {art.medium} · {art.year}
-                    </p>
-                    <p style={{ fontFamily: "'Playfair Display', serif", color: v("site-text") }} className="text-base sm:text-2xl italic leading-tight">
-                      {art.title}
+                    <p
+                      className="inline-block rounded-full border px-3 py-1.5 text-[10px] sm:text-[12px] tracking-[0.25em] sm:tracking-[0.3em] uppercase backdrop-blur-md"
+                      style={{ color: "#f5e500", background: "rgba(255,255,255,0.1)", borderColor: "rgba(255,255,255,0.2)" }}
+                    >
+                      {art.category}
                     </p>
                   </div>
                   <div
@@ -982,15 +997,9 @@ export default function App() {
                 {selectedArtwork.title}
               </h3>
 
-              <p className="mb-6 sm:mb-8 text-base sm:text-lg leading-relaxed font-light" style={{ color: v("site-muted") }}>
-                {selectedArtwork.description}
-              </p>
-
               <div className="grid gap-3 sm:gap-4 border-y py-5 sm:py-6" style={{ borderColor: v("site-divider") }}>
                 {[
                   ["Medium", selectedArtwork.medium],
-                  ["Made Date", selectedArtwork.madeDate],
-                  ["Year", selectedArtwork.year],
                   ["Dimensions", selectedArtwork.dimensions],
                   ["Availability", selectedArtwork.availability],
                 ].map(([label, value]) => (
@@ -1012,7 +1021,7 @@ export default function App() {
                 onMouseEnter={(e) => (e.currentTarget.style.background = v("site-teal"))}
                 onMouseLeave={(e) => (e.currentTarget.style.background = v("site-gold"))}
               >
-                Inquire About This Piece
+                Inquire about re-creating this piece?
               </button>
             </div>
           </div>
@@ -1165,8 +1174,7 @@ export default function App() {
             </h2>
             <p className="text-lg leading-relaxed mb-10 font-light max-w-sm" style={{ color: v("site-muted") }}>
               Whether you are a first-time collector or an established patron, every inquiry is
-              treated with personal attention. Reach out to discuss availability, commissions, or
-              studio visits.
+              treated with personal attention. Reach out to discuss availability or commissions.
             </p>
 
             <div className="space-y-5">
