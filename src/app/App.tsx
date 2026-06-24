@@ -1,54 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router";
 import { Menu, X, ChevronDown, Star, Mail, Phone, MapPin, Instagram, Facebook, Twitter, Sun, Moon, Check, AlertCircle, Printer, Frame, Sparkles } from "lucide-react";
 import emailjs from "@emailjs/browser";
 import heroBg from "../imports/image.png";
 import logo from "../img/snovalogo.png";
 import profile from "../img/profile.jpg";
-import fear from "../img/fear.jpg";
-import anger from "../img/anger.png";
-import joker from "../img/joker.jpg";
 import authenticityImg from "../img/authenticity.jpg";
+import { DARK, LIGHT, applyTokens, v } from "./theme";
+import { FEATURED_ARTWORKS as ARTWORKS, GALLERY_ARTWORKS } from "./data/artworks";
 
 const NAV_LINKS = ["Home", "Services", "Portfolio", "About Us", "Testimonials", "Contact Us"];
-
-const ARTWORKS = [
-  {
-    id: 1,
-    title: "Envy",
-    medium: "Oil on Canvas",
-    year: "2024",
-    madeDate: "March 2024",
-    dimensions: "36 x 48 in",
-    availability: "Original available",
-    description:
-      "A profound exploration of the unknown, utilizing high-contrast shadows and layered textures to evoke a sense of visceral depth and introspection.",
-    img: fear,
-  },
-  {
-    id: 2,
-    title: "Anger",
-    medium: "Acrylic on Canvas",
-    year: "2024",
-    madeDate: "January 2024",
-    dimensions: "30 x 40 in",
-    availability: "Replica and print available",
-    description:
-      "Captured through vigorous brushwork and a vibrant palette, this piece translates raw emotion into a rhythmic, powerful visual experience.",
-    img: anger,
-  },
-  {
-    id: 3,
-    title: "Joker",
-    medium: "Mixed Media",
-    year: "2024",
-    madeDate: "May 2024",
-    dimensions: "24 x 36 in",
-    availability: "Print available",
-    description:
-      "A complex character study that balances light and darkness, employing mixed media to provide a contemporary edge and architectural depth.",
-    img: joker,
-  },
-];
 
 const SERVICES = [
   {
@@ -127,96 +88,14 @@ const POLICY_DATA: Record<string, { title: string; content: string }> = {
   },
 };
 
-/* ── theme token sets ── */
-const DARK = {
-  siteBg:         "#2a2828",
-  siteBgAlt:      "#1e1c1c",
-  siteBg2:        "#242222",
-  siteCard:       "#333030",
-  siteText:       "#f0e6d3",
-  siteMuted:      "#b0a090",
-  sitePlaceholder:"#4a4545",
-  siteBigText:    "#3d3939",
-  siteGold:       "#7a35b8",
-  siteGoldHover:  "#9a5ad6",
-  siteTeal:       "#00c4b4",
-  siteYellow:     "#f5d894",
-  siteGoldDim:    "rgba(122,53,184,0.13)",
-  siteBorder:     "rgba(122,53,184,0.2)",
-  siteBorderHover:"rgba(0,196,180,0.5)",
-  siteNavBg:      "rgba(42,40,40,0.45)",
-  siteMobileBg:   "rgba(42,40,40,0.75)",
-  siteDivider:    "rgba(122,53,184,0.15)",
-  siteHeroBg:     "rgba(42,40,40,0.7)",
-  siteHeroFrom:   "rgba(42,40,40,1)",
-  siteHeroVia:    "rgba(42,40,40,0.7)",
-  siteInputBg:    "#1e1c1c",
-  siteRingFocus:  "rgba(0,196,180,0.18)",
-};
-
-const LIGHT = {
-  siteBg:         "#e4e0ee",
-  siteBgAlt:      "#dad6e6",
-  siteBg2:        "#d4cfe2",
-  siteCard:       "#ffffff",
-  siteText:       "#2a2828",
-  siteMuted:      "#5a5565",
-  sitePlaceholder:"#b0acc0",
-  siteBigText:    "#d0cbe0",
-  siteGold:       "#7a35b8",
-  siteGoldHover:  "#5d2491",
-  siteTeal:       "#009e90",
-  siteYellow:     "#b8a800",
-  siteGoldDim:    "rgba(122,53,184,0.1)",
-  siteBorder:     "rgba(122,53,184,0.18)",
-  siteBorderHover:"rgba(0,158,144,0.45)",
-  siteNavBg:      "rgba(228,224,238,0.72)",
-  siteMobileBg:   "rgba(228,224,238,0.92)",
-  siteDivider:    "rgba(122,53,184,0.13)",
-  siteHeroBg:     "rgba(228,224,238,0.5)",
-  siteHeroFrom:   "rgba(218,214,230,0.95)",
-  siteHeroVia:    "rgba(218,214,230,0.6)",
-  siteInputBg:    "#fdfbff",
-  siteRingFocus:  "rgba(0,158,144,0.15)",
-};
-
-function applyTokens(t: typeof DARK) {
-  const r = document.documentElement.style;
-  r.setProperty("--site-bg",          t.siteBg);
-  r.setProperty("--site-bg-alt",      t.siteBgAlt);
-  r.setProperty("--site-bg-2",        t.siteBg2);
-  r.setProperty("--site-card",        t.siteCard);
-  r.setProperty("--site-text",        t.siteText);
-  r.setProperty("--site-muted",       t.siteMuted);
-  r.setProperty("--site-placeholder", t.sitePlaceholder);
-  r.setProperty("--site-big-text",    t.siteBigText);
-  r.setProperty("--site-gold",        t.siteGold);
-  r.setProperty("--site-gold-hover",  t.siteGoldHover);
-  r.setProperty("--site-teal",        t.siteTeal);
-  r.setProperty("--site-yellow",      t.siteYellow);
-  r.setProperty("--site-gold-dim",    t.siteGoldDim);
-  r.setProperty("--site-border",      t.siteBorder);
-  r.setProperty("--site-border-hover",t.siteBorderHover);
-  r.setProperty("--site-nav-bg",      t.siteNavBg);
-  r.setProperty("--site-mobile-bg",   t.siteMobileBg);
-  r.setProperty("--site-divider",     t.siteDivider);
-  r.setProperty("--site-hero-bg",     t.siteHeroBg);
-  r.setProperty("--site-hero-from",   t.siteHeroFrom);
-  r.setProperty("--site-hero-via",    t.siteHeroVia);
-  r.setProperty("--site-input-bg",    t.siteInputBg);
-  r.setProperty("--site-ring-focus",  t.siteRingFocus);
-}
-
-/* shorthand style helpers */
-const v = (name: string) => `var(--${name})`;
-
-const HERO_SLIDES = [
-  { img: fear,  title: "Fear",   medium: "Oil on Canvas" },
-  { img: anger, title: "Anger",  medium: "Acrylic on Canvas" },
-  { img: joker, title: "Joker",  medium: "Mixed Media" },
-];
+const HERO_SLIDES = GALLERY_ARTWORKS.map((art) => ({
+  img: art.img,
+  title: art.title,
+  medium: art.medium,
+}));
 
 export default function App() {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen]   = useState(false);
   const [scrolled, setScrolled]   = useState(false);
   const [activeSection, setActive] = useState("Home");
@@ -380,7 +259,7 @@ export default function App() {
             {/* Desktop links */}
             <ul className="hidden md:flex items-center gap-4 lg:gap-6">
               {NAV_LINKS.map((link) => (
-                <li key={link}>
+                <li key={link} className={link === "Testimonials" ? "hidden" : undefined}>
                   <button
                     onClick={() => scrollTo(link)}
                     className="text-xs tracking-[0.2em] uppercase transition-colors duration-300"
@@ -453,7 +332,7 @@ export default function App() {
                 <button
                   key={link}
                   onClick={() => scrollTo(link)}
-                  className="text-left text-sm tracking-[0.2em] uppercase transition-colors"
+                  className={`text-left text-sm tracking-[0.2em] uppercase transition-colors ${link === "Testimonials" ? "hidden" : ""}`}
                   style={{ color: activeSection === link ? v("site-gold") : v("site-text") }}
                 >
                   {link}
@@ -669,15 +548,15 @@ export default function App() {
                   <div className="mb-5" style={{ color: v("site-text") }}>
                     <svc.icon size={32} strokeWidth={1.5} />
                   </div>
-                  <h3 className="text-2xl font-normal mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  <h3 className="text-3xl font-normal mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {svc.label}
                   </h3>
-                  <p className="text-[10px] tracking-[0.25em] uppercase mb-4" style={{ color: v("site-gold") }}>{svc.tagline}</p>
-                  <p className="text-sm leading-relaxed mb-6 font-light" style={{ color: v("site-muted") }}>{svc.description}</p>
+                  <p className="text-[11px] tracking-[0.25em] uppercase mb-4" style={{ color: v("site-gold") }}>{svc.tagline}</p>
+                  <p className="text-base leading-relaxed mb-6 font-light" style={{ color: v("site-muted") }}>{svc.description}</p>
 
                   <ul className="space-y-2 mb-8">
                     {svc.features.map((f) => (
-                      <li key={f} className="flex items-center gap-3 text-xs opacity-80" style={{ color: v("site-text") }}>
+                      <li key={f} className="flex items-center gap-3 text-sm opacity-80" style={{ color: v("site-text") }}>
                         <span className="text-[8px]" style={{ color: v("site-gold") }}>◆</span>
                         {f}
                       </li>
@@ -718,12 +597,12 @@ export default function App() {
             </button>
             <button
               onClick={() => setAuthenticityOpen(true)}
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-xl border text-xs tracking-[0.25em] uppercase font-semibold transition-all duration-300"
+              className="hidden items-center gap-3 px-8 py-4 rounded-xl border text-xs tracking-[0.25em] uppercase font-semibold transition-all duration-300"
               style={{ borderColor: "#f5d894", color: "#f5d894" }}
               onMouseEnter={(e) => { e.currentTarget.style.background = v("site-teal"); e.currentTarget.style.color = "white"; e.currentTarget.style.borderColor = v("site-teal"); }}
               onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#f5d894"; }}
             >
-              Sample authenticity card
+              S`ample authenticity card
               <Sparkles size={14} className="ml-1" />
             </button>
           </div>
@@ -744,6 +623,7 @@ export default function App() {
               </h2>
             </div>
             <button
+              onClick={() => navigate("/collection")}
               className="hidden md:block text-[12px] tracking-[0.3em] uppercase border-b pb-1 transition-colors"
               style={{ color: v("site-muted"), borderColor: v("site-border") }}
               onMouseEnter={(e) => (e.currentTarget.style.color = v("site-teal"))}
@@ -791,6 +671,16 @@ export default function App() {
                 </div>
               </button>
             ))}
+          </div>
+
+          <div className="mt-10 flex justify-center md:hidden">
+            <button
+              onClick={() => navigate("/collection")}
+              className="text-[12px] tracking-[0.3em] uppercase border-b pb-1 transition-colors"
+              style={{ color: v("site-muted"), borderColor: v("site-border") }}
+            >
+              View Full Collection →
+            </button>
           </div>
         </div>
       </section>
@@ -1127,25 +1017,22 @@ export default function App() {
             </div>
 
             <h2 className="text-4xl lg:text-5xl font-normal mb-6 leading-snug" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Where Passion
-              <br />
-              <em className="italic" style={{ color: v("site-gold") }}>Meets Mastery</em>
+              <em className="italic" style={{ color: v("site-gold") }}>Where creativity becomes visual.</em>
             </h2>
 
             <p className="text-lg leading-relaxed mb-6 font-light" style={{ color: v("site-muted") }}>
-              With over a decade of dedicated practice across oil, acrylic, and mixed media,
-              my work explores the tension between silence and movement—the moment a thought
-              becomes form. Each piece is an invitation into that liminal space.
+              For over a decade, I have explored acrylic, oil, and mixed media, creating works
+              that capture the space between imagination and expression. Each piece invites
+              viewers into stories, emotions, and moments beyond the visible.
             </p>
 
             <p className="text-lg leading-relaxed mb-10 font-light" style={{ color: v("site-muted") }}>
-              Trained at the Manila Fine Arts Institute and later at the Florence Academy of Art,
-              I bring both classical discipline and contemporary vision to every canvas. My works
-              have been exhibited in galleries across Southeast Asia and Europe.
+              Guided by mentorship at BHNHS and refined through years of commissioned work,
+              I bring a contemporary perspective and dedicated craftsmanship to every creation.
             </p>
 
-            <div className="grid grid-cols-3 gap-6 border-t pt-8" style={{ borderColor: v("site-divider") }}>
-              {[["12+", "Years"], ["200+", "Artworks"], ["40+", "Collectors"]].map(([num, label]) => (
+            <div className="grid grid-cols-2 gap-6 border-t pt-8" style={{ borderColor: v("site-divider") }}>
+              {[["89+", "Artworks"], ["27+", "Commissions"]].map(([num, label]) => (
                 <div key={label}>
                   <p className="text-5xl font-normal mb-1" style={{ fontFamily: "'Playfair Display', serif", color: v("site-teal") }}>
                     {num}
@@ -1159,7 +1046,7 @@ export default function App() {
       </section>
 
             {/* TESTIMONIALS */}
-      <section id="testimonials" className="relative py-32 overflow-hidden" style={{ background: v("site-bg-2") }}>
+      <section id="testimonials" className="hidden relative py-32 overflow-hidden" style={{ background: v("site-bg-2") }}>
         <div className="absolute top-0 left-0 right-0 h-px" style={{ background: `linear-gradient(to right, transparent, ${v("site-gold")}, transparent)`, opacity: 0.3 }} />
 
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -1249,9 +1136,8 @@ export default function App() {
 
             <div className="space-y-5">
               {[
-                { icon: <Mail size={16} />, label: "snvaselect.art@gmail.com" },
-                { icon: <Phone size={16} />, label: "+63 917 000 0000" },
-                { icon: <MapPin size={16} />, label: "Quezon City, Metro Manila, Philippines" },
+                { icon: <Mail size={16} />, label: "snva.co@gmail.com" },
+                { icon: <MapPin size={16} />, label: "Manila, Philippines" },
               ].map(({ icon, label }) => (
                 <div key={label} className="flex items-center gap-4 text-sm" style={{ color: v("site-muted") }}>
                   <span style={{ color: v("site-gold") }}>{icon}</span>
@@ -1369,7 +1255,6 @@ export default function App() {
           <div className="grid lg:grid-cols-4 gap-12 mb-12">
             <div className="lg:col-span-2">
               <div className="mb-4 flex items-center gap-2">
-                <img src={logo} alt="SNØVA Logo" className="h-10 w-auto object-contain" />
                 <span
                   className="text-2xl font-light"
                   style={{ fontFamily: "'Cormorant Unicase', serif", color: v("site-gold"), letterSpacing: "0.25em" }}
@@ -1407,7 +1292,7 @@ export default function App() {
               <p className="text-[10px] tracking-[0.3em] uppercase mb-5" style={{ color: v("site-gold") }}>Navigation</p>
               <ul className="space-y-3">
                 {NAV_LINKS.map((link) => (
-                  <li key={link}>
+                  <li key={link} className={link === "Testimonials" ? "hidden" : undefined}>
                     <button
                       onClick={() => scrollTo(link)}
                       className="text-sm transition-colors"
